@@ -4,6 +4,7 @@ import inboxIcon from "./assets/inbox-solid.svg";
 import todayIcon from "./assets/calendar-day-solid.svg";
 import weekIcon from "./assets/calendar-week-solid.svg";
 import addIcon from "./assets/calendar-plus-solid.svg";
+import plusIcon from "./assets/plus-solid.svg";
 
 const header = () => {
   const header = document.createElement("header");
@@ -55,6 +56,19 @@ function createSideBarElement(icon, text) {
   return div;
 }
 
+function createInboxElement(icon, text) {
+  const div = document.createElement("div");
+  div.classList.add("inbox-element");
+  const image = document.createElement("img");
+  image.src = icon;
+  const h4 = document.createElement("h4");
+  h4.textContent = text;
+  div.appendChild(image);
+  div.appendChild(h4);
+
+  return div;
+}
+
 const sideBar = () => {
   const sideBar = document.createElement("div");
   sideBar.classList.add("sidebar");
@@ -75,6 +89,10 @@ const inbox = () => {
   const inbox = document.createElement("div");
   inbox.classList.add("inbox");
   inbox.textContent = "Inbox";
+  const hr = document.createElement("hr");
+  inbox.appendChild(hr);
+  inbox.appendChild(createInboxElement(plusIcon, "Add Task"));
+
   return inbox;
 };
 

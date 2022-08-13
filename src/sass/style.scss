@@ -2,6 +2,24 @@
 
 $blue: #1e3a8a;
 
+@mixin elements {
+  &:hover {
+    cursor: pointer;
+  }
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 2rem;
+
+  h4 {
+    font-size: 1.5rem;
+  }
+
+  img {
+    height: 2.5rem;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -61,34 +79,35 @@ main {
     align-items: start;
     gap: 3rem;
     color: white;
-    padding: 6rem 4rem;
+    padding: 4rem 2rem;
     font-size: 1.6rem;
 
     h4 {
-      font-size: 3rem;
+      font-size: 2rem;
     }
 
     .sidebar-element {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-
-      h4 {
-        font-size: 1.6rem;
-      }
-
-      img {
-        height: 3.5rem;
-      }
+      @include elements();
     }
   }
 
   .inbox {
-    font-size: 3rem;
+    display: flex;
+    flex-direction: column;
+    font-size: 4rem;
     font-weight: bold;
     color: white;
-    padding: 2rem;
+    padding: 2rem 10rem;
+
+    hr {
+      margin: 0.5rem 0 1.5rem 0;
+      color: white;
+    }
+
+    .inbox-element {
+      @include elements();
+      margin: 0;
+    }
   }
 }
 
