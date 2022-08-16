@@ -6,6 +6,9 @@ import weekIcon from "./assets/calendar-week-solid.svg";
 import addIcon from "./assets/calendar-plus-solid.svg";
 import plusIcon from "./assets/plus-solid.svg";
 
+import { modalHandlers } from "./modal";
+import modal from "./modal";
+
 const header = () => {
   const header = document.createElement("header");
   const logo = document.createElement("div");
@@ -56,7 +59,7 @@ function createSideBarElement(icon, text) {
   return div;
 }
 
-function createInboxElement(icon, text) {
+function addTaskElement(icon, text) {
   const div = document.createElement("div");
   div.classList.add("inbox-element");
   const image = document.createElement("img");
@@ -65,6 +68,7 @@ function createInboxElement(icon, text) {
   h4.textContent = text;
   div.appendChild(image);
   div.appendChild(h4);
+  div.id = "add";
 
   return div;
 }
@@ -72,7 +76,7 @@ function createInboxElement(icon, text) {
 const sideBar = () => {
   const sideBar = document.createElement("div");
   sideBar.classList.add("sidebar");
-  sideBar.appendChild(createSideBarElement(inboxIcon, "Inbox"));
+  sideBar.appendChild(createSideBarElement(inboxIcon, "Home"));
   sideBar.appendChild(createSideBarElement(todayIcon, "Today"));
   sideBar.appendChild(createSideBarElement(weekIcon, "Week"));
 
@@ -88,10 +92,10 @@ const sideBar = () => {
 const inbox = () => {
   const inbox = document.createElement("div");
   inbox.classList.add("inbox");
-  inbox.textContent = "Inbox";
+  inbox.textContent = "Home";
   const hr = document.createElement("hr");
   inbox.appendChild(hr);
-  inbox.appendChild(createInboxElement(plusIcon, "Add Task"));
+  inbox.appendChild(addTaskElement(plusIcon, "Add Task"));
 
   return inbox;
 };
@@ -109,6 +113,9 @@ const homePage = () => {
   body.appendChild(header());
   body.appendChild(main());
   body.appendChild(footer());
+  body.appendChild(modal());
+
+  modalHandlers();
 };
 
 export default homePage;
