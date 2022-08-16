@@ -149,42 +149,35 @@ const createInboxElement = (title, date, notes, priority) => {
   div.appendChild(taskLeft);
   div.appendChild(taskRight);
 
+  const elementDetails = document.createElement("div");
+  elementDetails.classList.add("details");
+  elementDetails.classList.add("hidden");
+  const titleDetail = document.createElement("h4");
+  titleDetail.textContent = "Title: " + title;
+
+  const dateDetail = document.createElement("h4");
+  dateDetail.textContent = "Deadline: " + date;
+
+  const notesDetail = document.createElement("h4");
+  notesDetail.textContent = "Notes: " + notes;
+
+  const priorityDetail = document.createElement("h4");
+  priorityDetail.textContent = "Priority: " + priority;
+
+  elementDetails.appendChild(titleDetail);
+  elementDetails.appendChild(dateDetail);
+  elementDetails.appendChild(notesDetail);
+  elementDetails.appendChild(priorityDetail);
+
+  div.appendChild(elementDetails);
+
   inbox.appendChild(div);
 
   div.addEventListener("click", (e) => {
-    if (
-      div.childElementCount < 3 &&
-      (e.target.className == "inbox-element" ||
-        e.target.className == "task-left" ||
-        e.target.localName == "label")
-    ) {
-      const elementDetails = document.createElement("div");
-      elementDetails.classList.add("details");
-      const titleDetail = document.createElement("h4");
-      titleDetail.textContent = "Title: " + title;
-
-      const dateDetail = document.createElement("h4");
-      dateDetail.textContent = "Deadline: " + date;
-
-      const notesDetail = document.createElement("h4");
-      notesDetail.textContent = "Notes: " + notes;
-
-      const priorityDetail = document.createElement("h4");
-      priorityDetail.textContent = "Priority: " + priority;
-
-      elementDetails.appendChild(titleDetail);
-      elementDetails.appendChild(dateDetail);
-      elementDetails.appendChild(notesDetail);
-      elementDetails.appendChild(priorityDetail);
-
-      div.appendChild(elementDetails);
-    } else if (
-      div.childElementCount > 2 &&
-      (e.target.className == "inbox-element" ||
-        e.target.className == "task-left" ||
-        e.target.localName == "label")
-    ) {
-      div.removeChild(div.lastChild);
+    if (elementDetails.classList.contains("hidden")) {
+      elementDetails.classList.remove("hidden");
+    } else if (!elementDetails.classList.contains("hidden")) {
+      elementDetails.classList.add("hidden");
     }
   });
 
