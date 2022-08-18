@@ -1,5 +1,8 @@
 import trashIcon from "./assets/trash-solid.svg";
-import flagIcon from "./assets/flag-solid.svg";
+import whiteFlag from "./assets/flag-solid.svg";
+import redFlag from "./assets/flag-red.svg";
+import orangeFlag from "./assets/flag-orange.svg";
+
 import penIcon from "./assets/pen-to-square-solid.svg";
 
 import { createNewTask } from "./todoItem";
@@ -119,6 +122,7 @@ const createInboxElement = (title, date, notes, priority) => {
   const formBg = document.querySelector(".modal-bg");
   const div = document.createElement("div");
   const form = document.querySelector(".modal");
+  console.log(priority);
 
   div.classList.add("inbox-element");
 
@@ -140,7 +144,14 @@ const createInboxElement = (title, date, notes, priority) => {
   edit.src = penIcon;
   edit.classList.add("edit");
   const flag = document.createElement("img");
-  flag.src = flagIcon;
+  if (priority == "low") {
+    flag.src = whiteFlag;
+  } else if (priority == "medium") {
+    flag.src = orangeFlag;
+  } else if (priority == "high") {
+    flag.src = redFlag;
+  }
+
   const trash = document.createElement("img");
   trash.src = trashIcon;
   trash.classList.add("trash");
@@ -154,6 +165,7 @@ const createInboxElement = (title, date, notes, priority) => {
   const elementDetails = document.createElement("div");
   elementDetails.classList.add("details");
   elementDetails.classList.add("hidden");
+
   const titleDetail = document.createElement("h4");
   titleDetail.textContent = "Title: " + title;
 
