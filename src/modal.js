@@ -90,6 +90,8 @@ const createFormSelect = (name) => {
   select.appendChild(createOption("Medium"));
   select.appendChild(createOption("High"));
 
+  select.firstChild.setAttribute("selected", "selected");
+
   div.appendChild(label);
   div.appendChild(select);
 
@@ -114,10 +116,10 @@ const createExitButton = () => {
 };
 
 const createInboxElement = (title, date, notes, priority) => {
-  const modalBg = document.querySelector(".modal-bg");
-
-  const inbox = document.querySelector(".inbox");
+  const formBg = document.querySelector(".modal-bg");
   const div = document.createElement("div");
+  const form = document.querySelector(".modal");
+
   div.classList.add("inbox-element");
 
   const taskLeft = document.createElement("div");
@@ -127,24 +129,24 @@ const createInboxElement = (title, date, notes, priority) => {
   input.setAttribute("name", "done");
   const label = document.createElement("label");
   label.setAttribute("for", "done");
+  label.setAttribute("data-content", title);
   label.textContent = title;
-  label.setAttribute("data-content", label.textContent);
   taskLeft.appendChild(input);
   taskLeft.appendChild(label);
 
   const taskRight = document.createElement("div");
   taskRight.classList.add("task-right");
-  const image1 = document.createElement("img");
-  image1.src = penIcon;
-  image1.classList.add("edit");
-  const image2 = document.createElement("img");
-  image2.src = flagIcon;
-  const image3 = document.createElement("img");
-  image3.src = trashIcon;
-  image3.classList.add("trash");
-  taskRight.appendChild(image1);
-  taskRight.appendChild(image2);
-  taskRight.appendChild(image3);
+  const edit = document.createElement("img");
+  edit.src = penIcon;
+  edit.classList.add("edit");
+  const flag = document.createElement("img");
+  flag.src = flagIcon;
+  const trash = document.createElement("img");
+  trash.src = trashIcon;
+  trash.classList.add("trash");
+  taskRight.appendChild(edit);
+  taskRight.appendChild(flag);
+  taskRight.appendChild(trash);
 
   div.appendChild(taskLeft);
   div.appendChild(taskRight);
@@ -171,82 +173,117 @@ const createInboxElement = (title, date, notes, priority) => {
 
   div.appendChild(elementDetails);
 
-  inbox.appendChild(div);
-
   div.addEventListener("click", (e) => {
-    if (elementDetails.classList.contains("hidden")) {
+    if (
+      elementDetails.classList.contains("hidden") &&
+      (e.target.className == "inbox-element" ||
+        e.target.className == "task-left" ||
+        e.target.localName == "label")
+    ) {
       elementDetails.classList.remove("hidden");
-    } else if (!elementDetails.classList.contains("hidden")) {
+    } else if (
+      !elementDetails.classList.contains("hidden") &&
+      (e.target.className == "inbox-element" ||
+        e.target.className == "task-left" ||
+        e.target.localName == "label")
+    ) {
       elementDetails.classList.add("hidden");
     }
   });
 
-  const edit = document.querySelectorAll(".edit");
-  edit.forEach((e) => {
-    e.addEventListener("click", () => {
-      modalBg.classList.add("bg-active");
+  trash.addEventListener("click", () => {
+    trash.parentNode.parentNode.remove();
+  });
+
+  edit.addEventListener("click", () => {
+    console.log(edit.parentNode.parentNode.childNodes[2]);
+    formBg.firstChild.lastChild.textContent = "Edit";
+    formBg.classList.add("bg-active");
+
+    document.getElementById("titleInput").value = title;
+    document.getElementById("notesInput").value = notes;
+    document.getElementById("dateInput").value = date;
+    document.getElementById("priorityInput").value = priority;
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (formBg.firstChild.lastChild.textContent == "Edit") {
+        formBg.classList.remove("bg-active");
+        const newTask = createNewTask();
+        const newElement = createInboxElement(
+          newTask.title,
+          newTask.dueDate,
+          newTask.notes,
+          newTask.priority
+        );
+        edit.parentNode.parentNode.replaceWith(newElement);
+      }
     });
   });
 
-  const trash = document.querySelectorAll(".trash");
-  trash.forEach((e) =>
-    e.addEventListener("click", () => {
-      e.parentNode.parentNode.remove();
-    })
-  );
+  return div;
 };
 
-const modalHandlers = () => {
-  const modalBg = document.querySelector(".modal-bg");
+const formHandlers = () => {
+  const inbox = document.querySelector(".inbox");
+  const formBg = document.querySelector(".modal-bg");
   const form = document.querySelector(".modal");
 
   const createTaskButton = document.querySelector("#add");
   createTaskButton.addEventListener("click", () => {
-    modalBg.classList.add("bg-active");
+    formBg.firstChild.lastChild.textContent = "Add";
+    formBg.classList.add("bg-active");
+    document.getElementById("titleInput").value = "";
+    document.getElementById("notesInput").value = "";
+    document.getElementById("dateInput").value = "";
+    document.getElementById("priorityInput").value =
+      document.querySelector("select").firstChild.value;
   });
 
   const exit = document.querySelector(".exit-btn");
   exit.addEventListener("click", () => {
-    modalBg.classList.remove("bg-active");
+    formBg.classList.remove("bg-active");
   });
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const newTask = createNewTask();
-    createInboxElement(
-      newTask.title,
-      newTask.dueDate,
-      newTask.notes,
-      newTask.priority
-    );
-    modalBg.classList.remove("bg-active");
+    if (formBg.firstChild.lastChild.textContent == "Add") {
+      formBg.classList.remove("bg-active");
+      const newTask = createNewTask();
+      const newElement = createInboxElement(
+        newTask.title,
+        newTask.dueDate,
+        newTask.notes,
+        newTask.priority
+      );
+      inbox.appendChild(newElement);
+    }
   });
 
-  modalBg.addEventListener("click", (e) => {
-    if (modalBg.classList.contains("bg-active") && e.target == modalBg) {
-      modalBg.classList.remove("bg-active");
+  formBg.addEventListener("click", (e) => {
+    if (formBg.classList.contains("bg-active") && e.target == formBg) {
+      formBg.classList.remove("bg-active");
     }
   });
 };
 
-const modal = () => {
-  const modalBg = document.createElement("div");
-  modalBg.classList.add("modal-bg");
+const loadForm = () => {
+  const formBg = document.createElement("div");
+  formBg.classList.add("modal-bg");
 
-  const modalForm = document.createElement("form");
-  modalForm.classList.add("modal");
+  const form = document.createElement("form");
+  form.classList.add("modal");
 
-  modalForm.appendChild(createFormInput("Title", "text"));
-  modalForm.appendChild(createFormTextarea("Notes", "textarea"));
-  modalForm.appendChild(createCalendar("Date", "date"));
-  modalForm.appendChild(createFormSelect("Priority"));
-  modalForm.appendChild(createFormButton());
-  modalForm.appendChild(createExitButton());
+  form.appendChild(createFormInput("Title", "text"));
+  form.appendChild(createFormTextarea("Notes", "textarea"));
+  form.appendChild(createCalendar("Date", "date"));
+  form.appendChild(createFormSelect("Priority"));
+  form.appendChild(createExitButton());
+  form.appendChild(createFormButton());
 
-  modalBg.appendChild(modalForm);
+  formBg.appendChild(form);
 
-  return modalBg;
+  return formBg;
 };
 
-export default modal;
-export { modalHandlers };
+export { loadForm, formHandlers };

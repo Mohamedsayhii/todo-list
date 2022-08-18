@@ -6,8 +6,7 @@ import weekIcon from "./assets/calendar-week-solid.svg";
 import addIcon from "./assets/calendar-plus-solid.svg";
 import plusIcon from "./assets/plus-solid.svg";
 
-import { modalHandlers } from "./modal";
-import modal from "./modal";
+import { loadForm, formHandlers } from "./modal";
 
 const header = () => {
   const header = document.createElement("header");
@@ -113,9 +112,9 @@ const homePage = () => {
   body.appendChild(header());
   body.appendChild(main());
   body.appendChild(footer());
-  body.appendChild(modal());
+  body.appendChild(loadForm());
 
-  modalHandlers();
+  formHandlers();
 };
 
 export default homePage;

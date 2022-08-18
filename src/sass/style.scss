@@ -103,8 +103,10 @@ main {
   }
 
   .inbox {
+    max-height: calc(100vh - 133px - 51px);
     display: flex;
     flex-direction: column;
+    overflow: auto;
     padding: 2rem 10rem;
     font-size: 4rem;
     font-weight: bold;
