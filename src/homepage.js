@@ -6,7 +6,13 @@ import weekIcon from "./assets/calendar-week-solid.svg";
 import addIcon from "./assets/calendar-plus-solid.svg";
 import plusIcon from "./assets/plus-solid.svg";
 
-import { loadForm, formHandlers } from "./modal";
+import {
+  loadTaskForm,
+  taskFormHandlers,
+  loadProjectForm,
+  projectFormHandlers,
+} from "./taskform";
+import { renderProject } from "./taskform";
 
 const header = () => {
   const header = document.createElement("header");
@@ -54,6 +60,11 @@ function createSideBarElement(icon, text) {
   h4.textContent = text;
   div.appendChild(image);
   div.appendChild(h4);
+  div.id = text.toLowerCase();
+
+  div.addEventListener("click", () => {
+    if (text != "Add Project") renderProject(text);
+  });
 
   return div;
 }
@@ -84,6 +95,7 @@ const sideBar = () => {
 
   sideBar.appendChild(h4);
   sideBar.appendChild(createSideBarElement(addIcon, "Add Project"));
+  sideBar.lastChild.id = "addProject";
 
   return sideBar;
 };
@@ -91,10 +103,18 @@ const sideBar = () => {
 const inbox = () => {
   const inbox = document.createElement("div");
   inbox.classList.add("inbox");
-  inbox.textContent = "Home";
+
+  const h4 = document.createElement("h4");
+  h4.textContent = "Home";
   const hr = document.createElement("hr");
+  inbox.appendChild(h4);
   inbox.appendChild(hr);
   inbox.appendChild(addTaskElement(plusIcon, "Add Task"));
+
+  const tasksContainer = document.createElement("div");
+  tasksContainer.classList.add("tasks-container");
+
+  inbox.appendChild(tasksContainer);
 
   return inbox;
 };
@@ -112,9 +132,11 @@ const homePage = () => {
   body.appendChild(header());
   body.appendChild(main());
   body.appendChild(footer());
-  body.appendChild(loadForm());
+  body.appendChild(loadTaskForm());
+  body.appendChild(loadProjectForm());
 
-  formHandlers();
+  taskFormHandlers();
+  projectFormHandlers();
 };
 
 export default homePage;

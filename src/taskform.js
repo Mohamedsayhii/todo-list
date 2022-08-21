@@ -5,7 +5,11 @@ import orangeFlag from "./assets/flag-orange.svg";
 
 import penIcon from "./assets/pen-to-square-solid.svg";
 
-import { createNewTask } from "./todoItem";
+import createNewTask from "./task";
+import { createNewProject } from "./project";
+import todoList from "./todolist";
+
+const todolist = todoList();
 
 const createFormInput = (name, type) => {
   const div = document.createElement("div");
@@ -118,11 +122,11 @@ const createExitButton = () => {
   return span;
 };
 
-const createInboxElement = (title, date, notes, priority) => {
+const renderTask = (title, date, notes, priority) => {
+  const inbox = document.querySelector(".inbox");
   const formBg = document.querySelector(".modal-bg");
-  const div = document.createElement("div");
   const form = document.querySelector(".modal");
-  console.log(priority);
+  const div = document.createElement("div");
 
   div.classList.add("inbox-element");
 
@@ -135,6 +139,15 @@ const createInboxElement = (title, date, notes, priority) => {
   label.setAttribute("for", "done");
   label.setAttribute("data-content", title);
   label.textContent = title;
+
+  input.addEventListener("click", () => {
+    if (input.hasAttribute("checked")) {
+      input.removeAttribute("checked");
+    } else {
+      input.setAttribute("checked", "");
+    }
+  });
+
   taskLeft.appendChild(input);
   taskLeft.appendChild(label);
 
@@ -143,6 +156,7 @@ const createInboxElement = (title, date, notes, priority) => {
   const edit = document.createElement("img");
   edit.src = penIcon;
   edit.classList.add("edit");
+
   const flag = document.createElement("img");
   if (priority == "low") {
     flag.src = whiteFlag;
@@ -208,7 +222,6 @@ const createInboxElement = (title, date, notes, priority) => {
   });
 
   edit.addEventListener("click", () => {
-    console.log(edit.parentNode.parentNode.childNodes[2]);
     formBg.firstChild.lastChild.textContent = "Edit";
     formBg.classList.add("bg-active");
 
@@ -222,13 +235,47 @@ const createInboxElement = (title, date, notes, priority) => {
       if (formBg.firstChild.lastChild.textContent == "Edit") {
         formBg.classList.remove("bg-active");
         const newTask = createNewTask();
-        const newElement = createInboxElement(
+        const newElement = renderTask(
           newTask.title,
           newTask.dueDate,
           newTask.notes,
           newTask.priority
         );
         edit.parentNode.parentNode.replaceWith(newElement);
+        if (
+          !edit.parentNode.parentNode.lastChild.classList.contains("hidden")
+        ) {
+          newElement.lastChild.classList.remove("hidden");
+        }
+        const index = todolist
+          .getProjects()
+          .find(
+            (project) =>
+              project.name.toUpperCase() ==
+              inbox.firstChild.textContent.toUpperCase()
+          )
+          .getTasks()
+          .findIndex((task) => task.title == title);
+
+        todolist
+          .getProjects()
+          .find(
+            (project) =>
+              project.name.toUpperCase() ==
+              inbox.firstChild.textContent.toUpperCase()
+          )
+          .getTasks()[index] = newTask;
+
+        console.log(
+          todolist
+            .getProjects()
+            .find(
+              (project) =>
+                project.name.toUpperCase() ==
+                inbox.firstChild.textContent.toUpperCase()
+            )
+            .getTasks()
+        );
       }
     });
   });
@@ -236,13 +283,13 @@ const createInboxElement = (title, date, notes, priority) => {
   return div;
 };
 
-const formHandlers = () => {
+const taskFormHandlers = () => {
   const inbox = document.querySelector(".inbox");
   const formBg = document.querySelector(".modal-bg");
   const form = document.querySelector(".modal");
 
-  const createTaskButton = document.querySelector("#add");
-  createTaskButton.addEventListener("click", () => {
+  const addTaskButton = document.querySelector("#add");
+  addTaskButton.addEventListener("click", () => {
     formBg.firstChild.lastChild.textContent = "Add";
     formBg.classList.add("bg-active");
     document.getElementById("titleInput").value = "";
@@ -262,13 +309,15 @@ const formHandlers = () => {
     if (formBg.firstChild.lastChild.textContent == "Add") {
       formBg.classList.remove("bg-active");
       const newTask = createNewTask();
-      const newElement = createInboxElement(
-        newTask.title,
-        newTask.dueDate,
-        newTask.notes,
-        newTask.priority
-      );
-      inbox.appendChild(newElement);
+      todolist
+        .getProjects()
+        .find(
+          (project) =>
+            project.name.toUpperCase() ==
+            inbox.firstChild.textContent.toUpperCase()
+        )
+        .addTask(newTask);
+      renderProject(inbox.firstChild.textContent);
     }
   });
 
@@ -279,11 +328,13 @@ const formHandlers = () => {
   });
 };
 
-const loadForm = () => {
+const loadTaskForm = () => {
   const formBg = document.createElement("div");
+  formBg.id = "taskmodal-bg";
   formBg.classList.add("modal-bg");
 
   const form = document.createElement("form");
+  form.id = "taskmodal";
   form.classList.add("modal");
 
   form.appendChild(createFormInput("Title", "text"));
@@ -298,4 +349,108 @@ const loadForm = () => {
   return formBg;
 };
 
-export { loadForm, formHandlers };
+function renderProjectSidebar(text) {
+  const div = document.createElement("div");
+  div.classList.add("project-element");
+  const h4 = document.createElement("h4");
+  h4.textContent = text;
+  const trash = document.createElement("img");
+  trash.src = trashIcon;
+  div.appendChild(h4);
+  div.appendChild(trash);
+
+  trash.addEventListener("click", (e) => {
+    if (e.target.localName == "img") {
+      trash.parentNode.remove();
+    }
+  });
+
+  div.addEventListener("click", (e) => {
+    if (e.target.localName != "img") {
+      renderProject(text);
+      // console.log(todolist.getProjects());
+    }
+  });
+
+  return div;
+}
+
+const renderProject = (text) => {
+  const inbox = document.querySelector(".inbox");
+  const tasksContainer = document.querySelector(".tasks-container");
+  const h4 = document.querySelector(".inbox > h4");
+  tasksContainer.innerHTML = "";
+
+  h4.textContent = text;
+
+  todolist
+    .getProjects()
+    .find(
+      (project) =>
+        project.name.toUpperCase() == inbox.firstChild.textContent.toUpperCase()
+    )
+    .getTasks()
+    .map((task) =>
+      tasksContainer.appendChild(
+        renderTask(task.title, task.notes, task.dueDate, task.priority)
+      )
+    );
+};
+
+const projectFormHandlers = () => {
+  const formBg = document.querySelector("#projectmodal-bg");
+  const form = document.querySelector("#projectmodal");
+  const sideBar = document.querySelector(".sidebar");
+
+  const addProjectButton = document.querySelector("#addProject");
+  addProjectButton.addEventListener("click", () => {
+    formBg.firstChild.lastChild.textContent = "Add";
+    formBg.classList.add("bg-active");
+  });
+
+  const exit = document.querySelector(".exit-btn");
+  exit.addEventListener("click", () => {
+    formBg.classList.remove("bg-active");
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const newProject = createNewProject();
+    todolist.addProject(newProject);
+    const newSideBarElement = renderProjectSidebar(newProject.name);
+    sideBar.appendChild(newSideBarElement);
+    formBg.classList.remove("bg-active");
+  });
+
+  formBg.addEventListener("click", (e) => {
+    if (formBg.classList.contains("bg-active") && e.target == formBg) {
+      formBg.classList.remove("bg-active");
+    }
+  });
+};
+
+const loadProjectForm = () => {
+  const formBg = document.createElement("div");
+  formBg.id = "projectmodal-bg";
+  formBg.classList.add("modal-bg");
+
+  const form = document.createElement("form");
+  form.id = "projectmodal";
+  form.classList.add("modal");
+
+  form.appendChild(createFormInput("Project", "text"));
+  form.appendChild(createExitButton());
+  form.appendChild(createFormButton());
+
+  formBg.appendChild(form);
+
+  return formBg;
+};
+
+export {
+  loadTaskForm,
+  taskFormHandlers,
+  loadProjectForm,
+  projectFormHandlers,
+  renderProject,
+};

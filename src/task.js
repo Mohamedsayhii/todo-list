@@ -13,5 +13,4 @@ const createNewTask = () => {
   return newTask;
 };
 
-export default task;
-export { createNewTask };
+export default createNewTask;
