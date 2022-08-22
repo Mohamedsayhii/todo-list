@@ -13,9 +13,7 @@ const todoList = () => {
       projects.push(project);
     },
     deleteProject: (projectName) => {
-      projects = projects.filter(
-        (project) => project.projectName != projectName
-      );
+      projects = projects.filter((project) => project.name != projectName);
     },
   };
 
