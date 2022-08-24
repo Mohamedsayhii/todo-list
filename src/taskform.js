@@ -179,6 +179,14 @@ const renderTask = (title, notes, date, priority) => {
   div.appendChild(taskLeft);
   div.appendChild(taskRight);
 
+  if (
+    inbox.firstChild.textContent == "Today" ||
+    inbox.firstChild.textContent == "Week"
+  ) {
+    edit.style.display = "none";
+    trash.style.display = "none";
+  }
+
   const elementDetails = document.createElement("div");
   elementDetails.classList.add("details");
   elementDetails.classList.add("hidden");
@@ -463,10 +471,25 @@ const renderProject = (text) => {
   const inbox = document.querySelector(".inbox");
   const tasksContainer = document.querySelector(".tasks-container");
   const h4 = document.querySelector(".inbox > h4");
+  const add = document.querySelector("#add");
 
   tasksContainer.innerHTML = "";
 
   h4.textContent = text;
+
+  if (
+    inbox.firstChild.textContent != "Today" ||
+    inbox.firstChild.textContent != "Week"
+  ) {
+    add.style.display = "";
+  }
+
+  if (
+    inbox.firstChild.textContent == "Today" ||
+    inbox.firstChild.textContent == "Week"
+  ) {
+    add.style.display = "none";
+  }
 
   todolist
     .getProjects()
