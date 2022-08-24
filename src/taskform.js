@@ -7,7 +7,7 @@ import penIcon from "./assets/pen-to-square-solid.svg";
 
 import createNewTask from "./task";
 import { createNewProject } from "./project";
-import { isThisWeek, isToday, startOfToday } from "date-fns";
+import { isThisWeek, isToday } from "date-fns";
 import todoList from "./todolist";
 
 const todolist = todoList();
@@ -431,8 +431,20 @@ function renderProjectSidebar(text) {
   trash.addEventListener("click", (e) => {
     if (e.target.localName == "img") {
       trash.parentNode.remove();
+      const toRemove = todolist
+        .getProjects()
+        .find((project) => project.name.toUpperCase() == text.toUpperCase())
+        .getTasks();
+
+      todolist.getProjects()[1].update(toRemove);
+      todolist.getProjects()[2].update(toRemove);
+
       todolist.deleteProject(text);
-      renderProject("Home");
+      console.log(todolist.getProjects().length);
+
+      if (todolist.getProjects().length >= 3) {
+        renderProject("Home");
+      }
     }
   });
 

@@ -12,6 +12,9 @@ const project = (name) => {
     getTasks: () => {
       return tasks;
     },
+    update: (toRemove) => {
+      tasks = tasks.filter((task) => !toRemove.includes(task));
+    },
     updateToday: () => {
       tasks = tasks.filter((task) => isToday(new Date(task.dueDate)));
     },

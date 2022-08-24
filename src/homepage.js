@@ -129,6 +129,7 @@ const main = () => {
 
 const homePage = () => {
   const body = document.querySelector("body");
+
   body.appendChild(header());
   body.appendChild(main());
   body.appendChild(footer());
