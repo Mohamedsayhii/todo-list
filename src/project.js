@@ -1,3 +1,5 @@
+import { isToday, isThisWeek } from "date-fns";
+
 const project = (name) => {
   let tasks = [];
   const proto = {
@@ -9,6 +11,12 @@ const project = (name) => {
     },
     getTasks: () => {
       return tasks;
+    },
+    updateToday: () => {
+      tasks = tasks.filter((task) => isToday(new Date(task.dueDate)));
+    },
+    updateWeek: () => {
+      tasks = tasks.filter((task) => isThisWeek(new Date(task.dueDate)));
     },
   };
   return Object.assign(Object.create(proto), { name });

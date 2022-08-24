@@ -7,7 +7,7 @@ import penIcon from "./assets/pen-to-square-solid.svg";
 
 import createNewTask from "./task";
 import { createNewProject } from "./project";
-import { format, isThisWeek, isToday } from "date-fns";
+import { isThisWeek, isToday, startOfToday } from "date-fns";
 import todoList from "./todolist";
 
 const todolist = todoList();
@@ -66,9 +66,10 @@ const createCalendar = (name, type) => {
   input.setAttribute("type", type);
   input.setAttribute("name", `${name.toLowerCase()}`);
   input.setAttribute("id", `${name.toLowerCase()}Input`);
-  input.setAttribute("max", "01/01/2025");
+  input.setAttribute("max", "01-01-2025");
+  input.setAttribute("min", "08-23-2022");
   input.setAttribute("required", "");
-  input.setAttribute("value", `${name.toLowerCase()}Input.format('Y-m-d')`);
+  input.setAttribute("value", `${name.toLowerCase()}`);
 
   div.appendChild(label);
   div.appendChild(input);
@@ -128,6 +129,7 @@ const renderTask = (title, notes, date, priority) => {
   const formBg = document.querySelector(".modal-bg");
   const form = document.querySelector(".modal");
   const div = document.createElement("div");
+  const tasksContainer = document.querySelector(".tasks-container");
 
   div.classList.add("inbox-element");
 
@@ -223,7 +225,7 @@ const renderTask = (title, notes, date, priority) => {
 
   trash.addEventListener("click", () => {
     trash.parentNode.parentNode.remove();
-
+    console.log("before");
     console.log(
       todolist
         .getProjects()
@@ -244,6 +246,11 @@ const renderTask = (title, notes, date, priority) => {
       )
       .deleteTask(title);
 
+    todolist.getProjects()[1].deleteTask(title);
+
+    todolist.getProjects()[2].deleteTask(title);
+
+    console.log("after");
     console.log(
       todolist
         .getProjects()
@@ -262,10 +269,10 @@ const renderTask = (title, notes, date, priority) => {
 
     document.getElementById("titleInput").value = title;
     document.getElementById("notesInput").value = notes;
-    const myDate = document.querySelector("#dateInput");
     const datoo = new Date(date);
-    myDate.value = datoo.toISOString().substr(0, 10);
-    console.log(myDate.value);
+    document.getElementById("dateInput").value = datoo
+      .toISOString()
+      .substr(0, 10);
     document.getElementById("priorityInput").value = priority;
 
     form.addEventListener("submit", (e) => {
@@ -279,12 +286,16 @@ const renderTask = (title, notes, date, priority) => {
           newTask.dueDate,
           newTask.priority
         );
-        edit.parentNode.parentNode.replaceWith(newElement);
+
+        // edit.parentNode.parentNode.replaceWith(newElement);
+        tasksContainer.replaceChild(newElement, edit.parentNode.parentNode);
+
         if (
           !edit.parentNode.parentNode.lastChild.classList.contains("hidden")
         ) {
           newElement.lastChild.classList.remove("hidden");
         }
+
         const index = todolist
           .getProjects()
           .find(
@@ -304,16 +315,30 @@ const renderTask = (title, notes, date, priority) => {
           )
           .getTasks()[index] = newTask;
 
-        console.log(
-          todolist
-            .getProjects()
-            .find(
-              (project) =>
-                project.name.toUpperCase() ==
-                inbox.firstChild.textContent.toUpperCase()
-            )
-            .getTasks()
-        );
+        const indexToday = todolist
+          .getProjects()[1]
+          .getTasks()
+          .findIndex((task) => task.title == title);
+
+        todolist.getProjects()[1].getTasks()[indexToday] = newTask;
+
+        const indexWeek = todolist
+          .getProjects()[2]
+          .getTasks()
+          .findIndex((task) => task.title == title);
+
+        todolist.getProjects()[2].getTasks()[indexWeek] = newTask;
+
+        if (isToday(new Date(newTask.dueDate)) && indexToday == -1) {
+          todolist.getProjects()[1].addTask(newTask);
+        }
+
+        if (isThisWeek(new Date(newTask.dueDate)) && indexWeek == -1) {
+          todolist.getProjects()[2].addTask(newTask);
+        }
+
+        todolist.getProjects()[1].updateToday();
+        todolist.getProjects()[2].updateWeek();
       }
     });
   });
@@ -414,6 +439,7 @@ function renderProjectSidebar(text) {
   div.addEventListener("click", (e) => {
     if (e.target.localName != "img") {
       renderProject(text);
+
       // console.log(todolist.getProjects());
     }
   });
