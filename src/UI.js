@@ -11,8 +11,8 @@ import {
   taskFormHandlers,
   loadProjectForm,
   projectFormHandlers,
-} from "./taskform";
-import { renderProject } from "./taskform";
+} from "./domhandler";
+import { renderProject } from "./domhandler";
 
 const header = () => {
   const header = document.createElement("header");
@@ -127,7 +127,7 @@ const main = () => {
   return mainContent;
 };
 
-const homePage = () => {
+const UI = () => {
   const body = document.querySelector("body");
 
   body.appendChild(header());
@@ -140,4 +140,4 @@ const homePage = () => {
   projectFormHandlers();
 };
 
-export default homePage;
+export default UI;

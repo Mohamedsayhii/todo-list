@@ -1,4 +1,4 @@
-import homePage from "./homepage";
+import UI from "./UI";
 import "./sass/style.scss";
 
-homePage();
+UI();
