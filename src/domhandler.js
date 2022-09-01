@@ -1,3 +1,4 @@
+import { isThisWeek, isToday } from "date-fns";
 import trashIcon from "./assets/trash-solid.svg";
 import whiteFlag from "./assets/flag-solid.svg";
 import redFlag from "./assets/flag-red.svg";
@@ -7,7 +8,6 @@ import penIcon from "./assets/pen-to-square-solid.svg";
 
 import createNewTask from "./task";
 import { createNewProject } from "./project";
-import { isThisWeek, isToday } from "date-fns";
 import todoList from "./todolist";
 
 const todolist = todoList();
@@ -161,11 +161,11 @@ const renderTask = (title, notes, date, priority) => {
   edit.classList.add("edit");
 
   const flag = document.createElement("img");
-  if (priority == "low") {
+  if (priority === "low") {
     flag.src = whiteFlag;
-  } else if (priority == "medium") {
+  } else if (priority === "medium") {
     flag.src = orangeFlag;
-  } else if (priority == "high") {
+  } else if (priority === "high") {
     flag.src = redFlag;
   }
 
@@ -180,8 +180,8 @@ const renderTask = (title, notes, date, priority) => {
   div.appendChild(taskRight);
 
   if (
-    inbox.firstChild.textContent == "Today" ||
-    inbox.firstChild.textContent == "Week"
+    inbox.firstChild.textContent === "Today" ||
+    inbox.firstChild.textContent === "Week"
   ) {
     edit.style.display = "none";
     trash.style.display = "none";
@@ -192,19 +192,19 @@ const renderTask = (title, notes, date, priority) => {
   elementDetails.classList.add("hidden");
 
   const titleDetail = document.createElement("h4");
-  titleDetail.textContent = "Title: " + title;
+  titleDetail.textContent = `Title: ${title}`;
 
   const notesDetail = document.createElement("h4");
-  notesDetail.textContent = "Notes: " + notes;
+  notesDetail.textContent = `Notes: ${notes}`;
 
   const dateDetail = document.createElement("h4");
-  dateDetail.textContent = "Deadline: " + date;
+  dateDetail.textContent = `Deadline: ${date}`;
 
   const priorityCapitalized =
     priority.charAt(0).toUpperCase() + priority.slice(1);
 
   const priorityDetail = document.createElement("h4");
-  priorityDetail.textContent = "Priority: " + priorityCapitalized;
+  priorityDetail.textContent = `Priority: ${priorityCapitalized}`;
 
   elementDetails.appendChild(titleDetail);
   elementDetails.appendChild(notesDetail);
@@ -216,16 +216,16 @@ const renderTask = (title, notes, date, priority) => {
   div.addEventListener("click", (e) => {
     if (
       elementDetails.classList.contains("hidden") &&
-      (e.target.className == "inbox-element" ||
-        e.target.className == "task-left" ||
-        e.target.localName == "label")
+      (e.target.className === "inbox-element" ||
+        e.target.className === "task-left" ||
+        e.target.localName === "label")
     ) {
       elementDetails.classList.remove("hidden");
     } else if (
       !elementDetails.classList.contains("hidden") &&
-      (e.target.className == "inbox-element" ||
-        e.target.className == "task-left" ||
-        e.target.localName == "label")
+      (e.target.className === "inbox-element" ||
+        e.target.className === "task-left" ||
+        e.target.localName === "label")
     ) {
       elementDetails.classList.add("hidden");
     }
@@ -239,7 +239,7 @@ const renderTask = (title, notes, date, priority) => {
         .getProjects()
         .find(
           (project) =>
-            project.name.toUpperCase() ==
+            project.name.toUpperCase() ===
             inbox.firstChild.textContent.toUpperCase()
         )
         .getTasks()
@@ -249,7 +249,7 @@ const renderTask = (title, notes, date, priority) => {
       .getProjects()
       .find(
         (project) =>
-          project.name.toUpperCase() ==
+          project.name.toUpperCase() ===
           inbox.firstChild.textContent.toUpperCase()
       )
       .deleteTask(title);
@@ -264,7 +264,7 @@ const renderTask = (title, notes, date, priority) => {
         .getProjects()
         .find(
           (project) =>
-            project.name.toUpperCase() ==
+            project.name.toUpperCase() ===
             inbox.firstChild.textContent.toUpperCase()
         )
         .getTasks()
@@ -285,7 +285,7 @@ const renderTask = (title, notes, date, priority) => {
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      if (formBg.firstChild.lastChild.textContent == "Edit") {
+      if (formBg.firstChild.lastChild.textContent === "Edit") {
         formBg.classList.remove("bg-active");
         const newTask = createNewTask();
         const newElement = renderTask(
@@ -308,17 +308,17 @@ const renderTask = (title, notes, date, priority) => {
           .getProjects()
           .find(
             (project) =>
-              project.name.toUpperCase() ==
+              project.name.toUpperCase() ===
               inbox.firstChild.textContent.toUpperCase()
           )
           .getTasks()
-          .findIndex((task) => task.title == title);
+          .findIndex((task) => task.title === title);
 
         todolist
           .getProjects()
           .find(
             (project) =>
-              project.name.toUpperCase() ==
+              project.name.toUpperCase() ===
               inbox.firstChild.textContent.toUpperCase()
           )
           .getTasks()[index] = newTask;
@@ -326,22 +326,22 @@ const renderTask = (title, notes, date, priority) => {
         const indexToday = todolist
           .getProjects()[1]
           .getTasks()
-          .findIndex((task) => task.title == title);
+          .findIndex((task) => task.title === title);
 
         todolist.getProjects()[1].getTasks()[indexToday] = newTask;
 
         const indexWeek = todolist
           .getProjects()[2]
           .getTasks()
-          .findIndex((task) => task.title == title);
+          .findIndex((task) => task.title === title);
 
         todolist.getProjects()[2].getTasks()[indexWeek] = newTask;
 
-        if (isToday(new Date(newTask.dueDate)) && indexToday == -1) {
+        if (isToday(new Date(newTask.dueDate)) && indexToday === -1) {
           todolist.getProjects()[1].addTask(newTask);
         }
 
-        if (isThisWeek(new Date(newTask.dueDate)) && indexWeek == -1) {
+        if (isThisWeek(new Date(newTask.dueDate)) && indexWeek === -1) {
           todolist.getProjects()[2].addTask(newTask);
         }
 
@@ -377,7 +377,7 @@ const taskFormHandlers = () => {
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    if (formBg.firstChild.lastChild.textContent == "Add") {
+    if (formBg.firstChild.lastChild.textContent === "Add") {
       formBg.classList.remove("bg-active");
       const newTask = createNewTask();
       if (isToday(new Date(newTask.dueDate))) {
@@ -390,7 +390,7 @@ const taskFormHandlers = () => {
         .getProjects()
         .find(
           (project) =>
-            project.name.toUpperCase() ==
+            project.name.toUpperCase() ===
             inbox.firstChild.textContent.toUpperCase()
         )
         .addTask(newTask);
@@ -399,7 +399,7 @@ const taskFormHandlers = () => {
   });
 
   formBg.addEventListener("click", (e) => {
-    if (formBg.classList.contains("bg-active") && e.target == formBg) {
+    if (formBg.classList.contains("bg-active") && e.target === formBg) {
       formBg.classList.remove("bg-active");
     }
   });
@@ -437,11 +437,11 @@ function renderProjectSidebar(text) {
   div.appendChild(trash);
 
   trash.addEventListener("click", (e) => {
-    if (e.target.localName == "img") {
+    if (e.target.localName === "img") {
       trash.parentNode.remove();
       const toRemove = todolist
         .getProjects()
-        .find((project) => project.name.toUpperCase() == text.toUpperCase())
+        .find((project) => project.name.toUpperCase() === text.toUpperCase())
         .getTasks();
 
       todolist.getProjects()[1].update(toRemove);
@@ -457,7 +457,7 @@ function renderProjectSidebar(text) {
   });
 
   div.addEventListener("click", (e) => {
-    if (e.target.localName != "img") {
+    if (e.target.localName !== "img") {
       renderProject(text);
 
       // console.log(todolist.getProjects());
@@ -478,15 +478,15 @@ const renderProject = (text) => {
   h4.textContent = text;
 
   if (
-    inbox.firstChild.textContent != "Today" ||
-    inbox.firstChild.textContent != "Week"
+    inbox.firstChild.textContent !== "Today" ||
+    inbox.firstChild.textContent !== "Week"
   ) {
     add.style.display = "";
   }
 
   if (
-    inbox.firstChild.textContent == "Today" ||
-    inbox.firstChild.textContent == "Week"
+    inbox.firstChild.textContent === "Today" ||
+    inbox.firstChild.textContent === "Week"
   ) {
     add.style.display = "none";
   }
@@ -495,7 +495,8 @@ const renderProject = (text) => {
     .getProjects()
     .find(
       (project) =>
-        project.name.toUpperCase() == inbox.firstChild.textContent.toUpperCase()
+        project.name.toUpperCase() ===
+        inbox.firstChild.textContent.toUpperCase()
     )
     .getTasks()
     .map((task) =>
@@ -531,7 +532,7 @@ const projectFormHandlers = () => {
   });
 
   formBg.addEventListener("click", (e) => {
-    if (formBg.classList.contains("bg-active") && e.target == formBg) {
+    if (formBg.classList.contains("bg-active") && e.target === formBg) {
       formBg.classList.remove("bg-active");
     }
   });

@@ -9,9 +9,7 @@ const project = (name) => {
     deleteTask: (taskTitle) => {
       tasks = tasks.filter((task) => task.title != taskTitle);
     },
-    getTasks: () => {
-      return tasks;
-    },
+    getTasks: () => tasks,
     update: (toRemove) => {
       tasks = tasks.filter((task) => !toRemove.includes(task));
     },
