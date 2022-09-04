@@ -1,13 +1,16 @@
-const task = (title, notes, dueDate = "No date", priority = "Low") => {
-  return { title, notes, dueDate, priority };
-};
+const task = (title, notes, dueDate = 'No date', priority = 'Low') => ({
+  title,
+  notes,
+  dueDate,
+  priority,
+});
 
 const createNewTask = () => {
   const newTask = task(
-    document.getElementById("titleInput").value,
-    document.getElementById("notesInput").value,
-    document.getElementById("dateInput").value,
-    document.getElementById("priorityInput").value
+    document.getElementById('titleInput').value,
+    document.getElementById('notesInput').value,
+    document.getElementById('dateInput').value,
+    document.getElementById('priorityInput').value
   );
 
   return newTask;

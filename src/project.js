@@ -1,4 +1,4 @@
-import { isToday, isThisWeek } from "date-fns";
+import { isToday, isThisWeek } from 'date-fns';
 
 const project = (name) => {
   let tasks = [];
@@ -7,7 +7,7 @@ const project = (name) => {
       tasks.push(task);
     },
     deleteTask: (taskTitle) => {
-      tasks = tasks.filter((task) => task.title != taskTitle);
+      tasks = tasks.filter((task) => task.title !== taskTitle);
     },
     getTasks: () => tasks,
     update: (toRemove) => {
@@ -24,7 +24,7 @@ const project = (name) => {
 };
 
 const createNewProject = () => {
-  const newProject = project(document.getElementById("projectInput").value);
+  const newProject = project(document.getElementById('projectInput').value);
 
   return newProject;
 };

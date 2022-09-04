@@ -14,6 +14,7 @@ $break-point: 600px;
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 1rem;
   }
+
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -137,9 +138,11 @@ main {
 
     .inbox-element {
       @include elements();
+
       &:hover {
         background-color: rgba(255, 255, 255, 0.2);
       }
+
       margin: 0;
       width: 100%;
 
@@ -161,6 +164,7 @@ main {
           outline: 0;
           cursor: pointer;
           transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
+
           &::before {
             position: absolute;
             content: "";
@@ -175,6 +179,7 @@ main {
             transform: rotate(45deg);
             opacity: 0;
           }
+
           &:checked {
             color: $white;
             border-color: $green;
@@ -196,6 +201,7 @@ main {
           cursor: pointer;
           font-weight: 600;
           user-select: none;
+
           &::before {
             position: absolute;
             content: attr(data-content);
@@ -380,6 +386,7 @@ footer {
     .sidebar {
       justify-content: center;
       padding: 4rem 0.75rem;
+
       .sidebar-element {
         margin-left: 0;
       }

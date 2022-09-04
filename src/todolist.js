@@ -1,19 +1,18 @@
-import { project } from "./project";
+import { project } from './project';
 
 const todoList = () => {
   let projects = [];
-  projects.push(project("Home"));
-  projects.push(project("Today"));
-  projects.push(project("Week"));
+  projects.push(project('Home'));
+  projects.push(project('Today'));
+  projects.push(project('Week'));
   const proto = {
-    getProjects: () => {
-      return projects;
-    },
+    getProjects: () => projects,
+
     addProject: (project) => {
       projects.push(project);
     },
     deleteProject: (projectName) => {
-      projects = projects.filter((project) => project.name != projectName);
+      projects = projects.filter((project) => project.name !== projectName);
     },
   };
 

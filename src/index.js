@@ -1,4 +1,4 @@
-import UI from "./UI";
-import "./sass/style.scss";
+import UI from './UI';
+import './sass/style.scss';
 
 UI();

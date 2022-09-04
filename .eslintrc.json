@@ -11,6 +11,12 @@
   },
   "rules": {
     "no-console": "off",
-    "no-use-before-define": "off"
+    "quotes": [
+      "error",
+      "single",
+      { "avoidEscape": true, "allowTemplateLiterals": false }
+    ],
+    "no-use-before-define": "off",
+    "no-shadow": "off"
   }
 }
